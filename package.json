@@ -1,0 +1,14 @@
+{
+  "name": "cs2kz-server",
+  "module": "server.ts",
+  "devDependencies": {
+    "@types/bun": "^1.0.12"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "start": "bun run src/server.ts"
+  },
+  "type": "module"
+}
