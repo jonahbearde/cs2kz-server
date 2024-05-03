@@ -12,6 +12,8 @@ export type Tier =
 
 export type Mode = "classic" | "vanilla"
 
+export type Style = "normal" | "sideways"
+
 export type RankedStatus = "never" | "unranked" | "ranked"
 
 export type GlobalStatus = "global" | "not_global" | "in_testing"
@@ -90,7 +92,7 @@ export interface RecordToInsert {
   course_id: number
   player_id: string
   mode: string
-  style: string
+  styles: Style[]
   teleports: number
   time: number
   bhop_stats: {

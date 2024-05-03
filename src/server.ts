@@ -59,7 +59,7 @@ async function getAccessKey() {
 }
 
 async function sendRecord() {
-  const record: RecordToInsert = mockRecord()
+  const record = mockRecord()
 
   try {
     const res = await fetch(`${apiBase}/records`, {
@@ -78,12 +78,12 @@ async function sendRecord() {
   }
 }
 
-function mockRecord() {
+function mockRecord(): RecordToInsert {
   return {
     course_id: courseIds[Math.floor(Math.random() * courseIds.length)],
     player_id: steamIds[Math.floor(Math.random() * steamIds.length)],
     mode: Math.random() > 0.5 ? "classic" : "vanilla",
-    style: "normal",
+    styles: ["normal"],
     teleports: Math.random() > 0.4 ? Math.floor(Math.random() * 1000) : 0,
     time: Number((Math.random() * 20 * 60).toFixed(3)),
     bhop_stats: {
