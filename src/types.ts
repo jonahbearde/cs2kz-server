@@ -92,7 +92,7 @@ export interface RecordToInsert {
   course_id: number
   player_id: string
   mode: string
-  styles: Style[]
+  styles: string
   teleports: number
   time: number
   bhop_stats: {
