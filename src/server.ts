@@ -70,7 +70,7 @@ async function sendRecord() {
       },
       body: JSON.stringify(record),
     })
-
+    
     const data = await res.json()
     console.log(data)
   } catch (error) {
@@ -84,7 +84,7 @@ function mockRecord(): RecordToInsert {
     player_id: steamIds[Math.floor(Math.random() * steamIds.length)],
     mode: Math.random() > 0.5 ? "classic" : "vanilla",
     // usage: "normal,sideways,backwards"
-    styles: 'normal',
+    styles: ['normal'],
     teleports: Math.random() > 0.4 ? Math.floor(Math.random() * 1000) : 0,
     time: Number((Math.random() * 20 * 60).toFixed(3)),
     bhop_stats: {
