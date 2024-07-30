@@ -96,15 +96,7 @@ export interface RecordToInsert {
   teleports: number
   time: number
   bhop_stats: {
+    bhops: number
     perfs: number
-    tick0: number
-    tick1: number
-    tick2: number
-    tick3: number
-    tick4: number
-    tick5: number
-    tick6: number
-    tick7: number
-    tick8: number
   }
 }

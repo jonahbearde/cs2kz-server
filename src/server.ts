@@ -15,9 +15,12 @@ async function getPlayers() {
   try {
     const res = await fetch(`${apiBase}/players`)
 
-    const { results } = await res.json()
-
-    return results.map((player: Player) => player.steam_id)
+    if (res.status >= 400) {
+      console.log(`error:${res.status}:${await res.text()}`)
+    } else {
+      const { results } = await res.json()
+      return results.map((player: Player) => player.steam_id)
+    }
   } catch (error) {
     console.log("can't get players", error)
   }
@@ -27,11 +30,14 @@ async function getCourses() {
   try {
     const res = await fetch(`${apiBase}/maps`)
 
-    const { results } = await res.json()
-
-    // console.log(maps)
-
-    return results.flatMap((map: Map) => map.courses.map((course) => course.id))
+    if (res.status >= 400) {
+      console.log(`error:${res.status}:${await res.text()}`)
+    } else {
+      const { results } = await res.json()
+      return results.flatMap((map: Map) =>
+        map.courses.map((course) => course.id)
+      )
+    }
   } catch (error) {
     console.log("can't get maps", error)
   }
@@ -50,9 +56,12 @@ async function getAccessKey() {
       },
     })
 
-    const { access_key } = await res.json()
-
-    return access_key
+    if (res.status >= 400) {
+      console.log(`error:${res.status}:${await res.text()}`)
+    } else {
+      const { access_key } = await res.json()
+      return access_key
+    }
   } catch (error) {
     console.log("can't get access key", error)
   }
@@ -70,9 +79,13 @@ async function sendRecord() {
       },
       body: JSON.stringify(record),
     })
-    
-    const data = await res.json()
-    console.log(data)
+
+    if (res.status >= 400) {
+      console.log(`error:${res.status}:${await res.text()}`)
+    } else {
+      const data = await res.json()
+      console.log(data)
+    }
   } catch (error) {
     console.log("can't send record", error)
   }
@@ -83,21 +96,12 @@ function mockRecord(): RecordToInsert {
     course_id: courseIds[Math.floor(Math.random() * courseIds.length)],
     player_id: steamIds[Math.floor(Math.random() * steamIds.length)],
     mode: Math.random() > 0.5 ? "classic" : "vanilla",
-    // usage: "normal,sideways,backwards"
-    styles: ['normal'],
+    styles: ["normal"],
     teleports: Math.random() > 0.4 ? Math.floor(Math.random() * 1000) : 0,
     time: Number((Math.random() * 20 * 60).toFixed(3)),
     bhop_stats: {
+      bhops: 1000,
       perfs: 1000,
-      tick0: 500,
-      tick1: 300,
-      tick2: 200,
-      tick3: 0,
-      tick4: 0,
-      tick5: 0,
-      tick6: 0,
-      tick7: 0,
-      tick8: 0,
     },
   }
 }
