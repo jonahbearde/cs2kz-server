@@ -1,9 +1,7 @@
-import type { RecordToInsert, Player, Map } from "./types.ts"
-
 const apiBase = Bun.env.API_BASE
 const apiKey = Bun.env.API_KEY
 
-const accessKey = await getAccessKey()
+const accessToken = await getAccessToken()
 
 const steamIds = await getPlayers()
 
@@ -16,13 +14,15 @@ async function getPlayers() {
     const res = await fetch(`${apiBase}/players`)
 
     if (res.status >= 400) {
-      console.log(`error:${res.status}:${await res.text()}`)
+      console.log(
+        `api error:\n${res.status}:${await res.text()}`
+      )
     } else {
-      const { results } = await res.json()
-      return results.map((player: Player) => player.steam_id)
+      const { players } = await res.json()
+      return players.map((player: any) => player.steam_id)
     }
   } catch (error) {
-    console.log("can't get players", error)
+    console.log("error:\n", error)
   }
 }
 
@@ -31,24 +31,24 @@ async function getCourses() {
     const res = await fetch(`${apiBase}/maps`)
 
     if (res.status >= 400) {
-      console.log(`error:${res.status}:${await res.text()}`)
+      console.log(`api error:\n${res.status}:${await res.text()}`)
     } else {
-      const { results } = await res.json()
-      return results.flatMap((map: Map) =>
-        map.courses.map((course) => course.id)
+      const { maps } = await res.json()
+      return maps.flatMap((map: any) =>
+        map.courses.map((course: any) => course.id)
       )
     }
   } catch (error) {
-    console.log("can't get maps", error)
+    console.log("error:\n", error)
   }
 }
 
-async function getAccessKey() {
+async function getAccessToken() {
   try {
-    const res = await fetch(`${apiBase}/servers/key`, {
+    const res = await fetch(`${apiBase}/servers/auth`, {
       method: "POST",
       body: JSON.stringify({
-        refresh_key: apiKey,
+        key: apiKey,
         plugin_version: "0.0.1",
       }),
       headers: {
@@ -59,11 +59,11 @@ async function getAccessKey() {
     if (res.status >= 400) {
       console.log(`error:${res.status}:${await res.text()}`)
     } else {
-      const { access_key } = await res.json()
-      return access_key
+      const { token } = await res.json()
+      return token
     }
   } catch (error) {
-    console.log("can't get access key", error)
+    console.log("error:\n", error)
   }
 }
 
@@ -74,24 +74,24 @@ async function sendRecord() {
     const res = await fetch(`${apiBase}/records`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${accessKey}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(record),
     })
 
     if (res.status >= 400) {
-      console.log(`error:${res.status}:${await res.text()}`)
+      console.log(`api error:\n${res.status}:${await res.text()}`)
     } else {
       const data = await res.json()
       console.log(data)
     }
   } catch (error) {
-    console.log("can't send record", error)
+    console.log("error:\n", error)
   }
 }
 
-function mockRecord(): RecordToInsert {
+function mockRecord() {
   return {
     course_id: courseIds[Math.floor(Math.random() * courseIds.length)],
     player_id: steamIds[Math.floor(Math.random() * steamIds.length)],
@@ -100,8 +100,9 @@ function mockRecord(): RecordToInsert {
     teleports: Math.random() > 0.4 ? Math.floor(Math.random() * 1000) : 0,
     time: Number((Math.random() * 20 * 60).toFixed(3)),
     bhop_stats: {
-      bhops: 1000,
-      perfs: 1000,
+      total: 0,
+      perfect_perfs: 0,
+      perfs: 0,
     },
   }
 }
